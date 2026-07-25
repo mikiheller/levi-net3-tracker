@@ -1,4 +1,4 @@
-import { and, gte } from "drizzle-orm";
+import { gte } from "drizzle-orm";
 import { getDb, responses, raters as ratersTable, type Rater } from "./db";
 import { ITEMS } from "./items/items";
 import { DOMAINS, DOMAIN_MAP } from "./items/domains";

@@ -9,7 +9,6 @@ import * as schema from "./schema";
 type Db = ReturnType<typeof drizzlePg<typeof schema>>;
 
 declare global {
-  // eslint-disable-next-line no-var
   var __leviDb: { db: Db; ready: Promise<void> } | undefined;
 }
 
