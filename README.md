@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Levi Tracker
 
-## Getting Started
+A web app for tracking Levi's development across communication, cognition,
+daily living skills, and more — built on the NET3 scales (Frazier et al.) plus
+a custom Communication & Language ladder, designed for a whole care team to
+contribute one-minute check-ins.
 
-First, run the development server:
+## How it works
+
+- **Home page** — everyone on the team taps their name after a session with
+  Levi. No accounts, no passwords.
+- **Check-in (~1 minute)** — a 4-question "today vs. typical" snapshot plus
+  ~5 NET3 questions chosen by a scheduler that:
+  - rotates through every domain on a weekly-ish cadence per person,
+  - deliberately overlaps raters on the same items within the same window
+    (so scores are calibrated across people),
+  - skips questions far above Levi's demonstrated skill ceiling, with
+    built-in probes so breakthroughs still get caught.
+- **Dashboard** (`/dashboard`) — weighted composite trend, per-domain charts
+  with per-rater overlays, a daily pulse chart, intervention markers, a
+  rater-comparison table, and the team's notes.
+- **Admin** (`/admin`, unlisted) — manage team members, log interventions
+  (meds, therapies, EEGs), tune domain weights, export all data as CSV, and
+  delete mistaken check-ins.
+
+## Tech
+
+- Next.js (App Router) + Tailwind + Recharts
+- Postgres via `DATABASE_URL` in production (Neon on Vercel)
+- Embedded PGlite in `.data/` for local dev — zero setup
+- The question bank lives in code: `lib/items/`
+
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Optional: seed six weeks of fake data to preview the dashboard, and wipe it:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx tsx scripts/seed-demo.ts
+rm -rf .data
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
+Deployed on Vercel. Requires a `DATABASE_URL` environment variable pointing
+at a Postgres database (tables are created automatically on first request).
 
-To learn more about Next.js, take a look at the following resources:
+## Credits
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+NET survey scales © Thomas W. Frazier et al., freely available for use
+(https://osf.io/cguzs/). This app adapts a subset of items for repeated
+micro-administration; it is a home progress-tracking tool, not a clinical
+instrument.
