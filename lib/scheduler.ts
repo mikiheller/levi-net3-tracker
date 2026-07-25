@@ -52,7 +52,6 @@ export async function buildBatch(raterId: string): Promise<BatchGroup[]> {
 
   // Latest response per (item, rater) and per item overall.
   const lastByItemRater = new Map<string, number>();
-  const ratersPerItemWindow = new Map<string, Set<string>>();
   const latestValueByItemRater = new Map<string, { value: number | null; isNa: boolean; at: number }>();
   for (const r of recent) {
     const t = new Date(r.createdAt).getTime();
