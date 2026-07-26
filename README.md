@@ -46,8 +46,12 @@ rm -rf .data
 
 ## Deployment
 
-Deployed on Vercel. Requires a `DATABASE_URL` environment variable pointing
-at a Postgres database (tables are created automatically on first request).
+Deployed on Vercel. Environment variables:
+
+- `DATABASE_URL` — Postgres connection string (tables are created
+  automatically on first request)
+- `OPENAI_API_KEY` — enables voice dictation (Whisper) for check-in notes;
+  without it the mic button shows a friendly "not set up yet" message
 
 ## Credits
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { SCALES } from "@/lib/items/scales";
 import type { Item } from "@/lib/items/types";
@@ -52,6 +52,63 @@ export default function CheckinForm({
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
+  // Voice dictation for the note field (recorded here, transcribed by Whisper
+  // on the server).
+  const [recState, setRecState] = useState<"idle" | "recording" | "transcribing">("idle");
+  const [recError, setRecError] = useState<string | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+
+  async function toggleDictation() {
+    if (recState === "recording") {
+      recorderRef.current?.stop();
+      return;
+    }
+    if (recState !== "idle") return;
+    setRecError(null);
+
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setRecError("Dictation isn't supported in this browser — please type instead.");
+      return;
+    }
+
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      setRecError("Microphone access was blocked — allow it in your browser settings.");
+      return;
+    }
+
+    // Safari records mp4/aac; Chrome and Firefox record webm. Whisper accepts both.
+    const mime = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/mp4";
+    const recorder = new MediaRecorder(stream, { mimeType: mime });
+    const chunks: Blob[] = [];
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+    recorder.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop());
+      setRecState("transcribing");
+      try {
+        const blob = new Blob(chunks, { type: mime });
+        const fd = new FormData();
+        fd.append("audio", blob, mime === "audio/webm" ? "note.webm" : "note.mp4");
+        const res = await fetch("/api/transcribe", { method: "POST", body: fd });
+        const data: { text?: string; error?: string } = await res.json();
+        if (!res.ok) throw new Error(data.error ?? "Transcription failed.");
+        const text = (data.text ?? "").trim();
+        if (text) setNote((n) => (n.trim() ? n.trimEnd() + " " : "") + text);
+      } catch (err) {
+        setRecError(err instanceof Error ? err.message : "Transcription failed.");
+      } finally {
+        setRecState("idle");
+      }
+    };
+    recorder.start();
+    recorderRef.current = recorder;
+    setRecState("recording");
+  }
 
   const answeredCount =
     Object.keys(answers).length +
@@ -224,13 +281,60 @@ export default function CheckinForm({
       {/* Note */}
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
         <h2 className="font-semibold">Anything notable? (optional)</h2>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="New words or sounds, a breakthrough, a rough patch, sleep, anything…"
-          rows={3}
-          className="mt-3 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm outline-none placeholder:text-stone-400 focus:border-indigo-400"
-        />
+        <p className="mt-0.5 text-sm text-stone-500">
+          Type, or press the microphone and talk — it&apos;ll be written down
+          for you.
+        </p>
+        <div className="relative mt-3">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="New words or sounds, a breakthrough, a rough patch, sleep, anything…"
+            rows={3}
+            className="w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-3 pr-12 text-sm outline-none placeholder:text-stone-400 focus:border-indigo-400"
+          />
+          <button
+            type="button"
+            onClick={toggleDictation}
+            disabled={recState === "transcribing"}
+            aria-label={recState === "recording" ? "Stop dictating" : "Dictate a note"}
+            title={recState === "recording" ? "Stop dictating" : "Dictate a note"}
+            className={`absolute bottom-3 right-2.5 flex h-9 w-9 items-center justify-center rounded-full transition ${
+              recState === "recording"
+                ? "animate-pulse bg-red-600 text-white"
+                : recState === "transcribing"
+                  ? "bg-stone-200 text-stone-400"
+                  : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"
+            }`}
+          >
+            {recState === "transcribing" ? (
+              <svg viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 3a9 9 0 1 0 9 9" strokeLinecap="round" />
+              </svg>
+            ) : recState === "recording" ? (
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                <rect x="6" y="6" width="12" height="12" rx="2" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="2.5" width="6" height="12" rx="3" />
+                <path d="M5 11a7 7 0 0 0 14 0" />
+                <path d="M12 18v3.5" />
+              </svg>
+            )}
+          </button>
+        </div>
+        {recState === "recording" && (
+          <div className="mt-1.5 text-xs font-medium text-red-600">
+            Listening… press the square to finish.
+          </div>
+        )}
+        {recState === "transcribing" && (
+          <div className="mt-1.5 text-xs text-stone-500">Writing it down…</div>
+        )}
+        {recError && (
+          <div className="mt-1.5 text-xs text-amber-700">{recError}</div>
+        )}
       </section>
 
       {/* Sticky submit */}
