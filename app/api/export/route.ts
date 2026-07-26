@@ -66,8 +66,8 @@ export async function GET() {
   for (const c of allCheckins) {
     const rater = raterMap.get(c.raterId);
     const metrics: [string, number | null][] = [
-      ["alertness", c.snapAlertness],
-      ["communication", c.snapCommunication],
+      ["receptivity", c.snapAlertness],
+      ["expression", c.snapCommunication],
       ["mood", c.snapMood],
       ["regulation", c.snapRegulation],
     ];

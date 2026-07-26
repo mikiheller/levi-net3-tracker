@@ -1,25 +1,53 @@
 import type { DomainMeta } from "./types";
 
 // Weights reflect priorities for tracking cognitive recovery in DEE-SWAS:
-// language and social connection first, then cognition and independence.
-// Editable in the admin portal; these are defaults.
+// language (four separate tracks, 23 combined) and social connection first,
+// then cognition and independence. Editable in the admin portal.
 export const DOMAINS: DomainMeta[] = [
   {
-    id: "communication",
-    name: "Communication & Language",
-    shortName: "Language",
-    stem: "Over the past week, how often did Levi…",
-    defaultWeight: 22,
+    id: "speech",
+    name: "Verbal Speech",
+    shortName: "Speech",
+    defaultWeight: 9,
     isLadder: true,
     description:
-      "Custom developmental ladder from intentional vocalizing up to conversation. The highest-priority signal for cognitive change.",
+      "Custom ladder from directed vocalizing through word approximations to meaningful single words. Built for very early speech re-emergence.",
     color: "#6366f1",
+  },
+  {
+    id: "aac",
+    name: "AAC",
+    shortName: "AAC",
+    defaultWeight: 5,
+    isLadder: true,
+    description:
+      "Custom ladder measuring purposeful AAC use: verifiably correct answers and independent navigation, not just button presses.",
+    color: "#a855f7",
+  },
+  {
+    id: "gesture",
+    name: "Gestures & Body",
+    shortName: "Gestures",
+    defaultWeight: 4,
+    isLadder: true,
+    description:
+      "Nonverbal expressive communication: hand-leading, pointing, head shakes, social gestures, pointing to share.",
+    color: "#d946ef",
+  },
+  {
+    id: "receptive",
+    name: "Understanding (Receptive)",
+    shortName: "Understanding",
+    defaultWeight: 5,
+    isLadder: true,
+    description:
+      "Receptive language: responding to name, following directions, identifying named objects, understanding questions.",
+    color: "#3b82f6",
   },
   {
     id: "social",
     name: "Social Connection",
     shortName: "Social",
-    stem: "Over the past week, how often did Levi…",
     defaultWeight: 15,
     isLadder: false,
     description:
@@ -30,19 +58,17 @@ export const DOMAINS: DomainMeta[] = [
     id: "cognition",
     name: "Cognition & Attention",
     shortName: "Cognition",
-    stem: "Over the past week, how often did Levi…",
     defaultWeight: 15,
     isLadder: false,
     description:
-      "Alertness, processing speed, attention, imitation and memory (from NET3 Executive Functioning + ADHD scales). Very sensitive to DEE-SWAS treatment effects.",
+      "Alertness, responsiveness, attention, memory, learning and problem-solving (custom + NET3 ADHD items). Very sensitive to DEE-SWAS treatment effects.",
     color: "#0ea5e9",
   },
   {
     id: "dls",
     name: "Daily Living Skills",
     shortName: "Daily living",
-    stem: "Right now, how independently can Levi…",
-    defaultWeight: 14,
+    defaultWeight: 13,
     isLadder: true,
     description:
       "Practical skills ordered by developmental difficulty (NET3 Practical Living Skills).",
@@ -52,7 +78,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "mood",
     name: "Mood & Regulation",
     shortName: "Mood",
-    stem: "Over the past week, how often did Levi seem…",
     defaultWeight: 8,
     isLadder: false,
     description: "Irritability, sadness, energy and emotional recovery (NET3 Mood scale).",
@@ -62,7 +87,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "behavior",
     name: "Challenging Behavior",
     shortName: "Behavior",
-    stem: "Over the past week, how much of a problem was…",
     defaultWeight: 8,
     isLadder: false,
     description:
@@ -73,7 +97,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "sleep",
     name: "Sleep",
     shortName: "Sleep",
-    stem: "Over the past week, how often did this happen?",
     defaultWeight: 8,
     isLadder: false,
     description:
@@ -84,7 +107,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "rrb",
     name: "Repetitive & Sensory",
     shortName: "Repetitive",
-    stem: "Over the past week, how often did Levi…",
     defaultWeight: 5,
     isLadder: false,
     description:
@@ -95,7 +117,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "anxiety",
     name: "Anxiety",
     shortName: "Anxiety",
-    stem: "Over the past week, how often did Levi seem…",
     defaultWeight: 3,
     isLadder: false,
     description: "Observable fear and distress (NET3 Anxiety scale, observable subset).",
@@ -105,7 +126,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "motor",
     name: "Motor Skills",
     shortName: "Motor",
-    stem: "Right now, how easy or hard is it for Levi to…",
     defaultWeight: 2,
     isLadder: true,
     description: "Gross and fine motor skills (NET3 Motor scale, core items).",
@@ -115,7 +135,6 @@ export const DOMAINS: DomainMeta[] = [
     id: "qol",
     name: "Family & Quality of Life",
     shortName: "QoL",
-    stem: "Thinking about the past month…",
     defaultWeight: 0,
     isLadder: false,
     description:

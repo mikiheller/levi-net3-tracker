@@ -84,8 +84,8 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
 
   const snapshotData = data.snapshots.map((s) => ({
     date: s.date,
-    Alertness: s.alertness,
-    Communication: s.communication,
+    Receptivity: s.alertness,
+    Expression: s.communication,
     Mood: s.mood,
     Regulation: s.regulation,
   }));
@@ -142,8 +142,8 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
                 events={data.events}
                 axisValues={snapshotData.map((p) => p.date)}
               />
-              <Line type="monotone" dataKey="Alertness" stroke="#0ea5e9" strokeWidth={2} dot={false} connectNulls />
-              <Line type="monotone" dataKey="Communication" stroke="#6366f1" strokeWidth={2} dot={false} connectNulls />
+              <Line type="monotone" dataKey="Receptivity" stroke="#0ea5e9" strokeWidth={2} dot={false} connectNulls />
+              <Line type="monotone" dataKey="Expression" stroke="#6366f1" strokeWidth={2} dot={false} connectNulls />
               <Line type="monotone" dataKey="Mood" stroke="#ec4899" strokeWidth={2} dot={false} connectNulls />
               <Line type="monotone" dataKey="Regulation" stroke="#10b981" strokeWidth={2} dot={false} connectNulls />
             </LineChart>
@@ -151,8 +151,8 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
         </div>
         <div className="mt-2 flex flex-wrap gap-4 text-xs text-stone-500">
           {[
-            ["Alertness", "#0ea5e9"],
-            ["Communication", "#6366f1"],
+            ["Receptivity", "#0ea5e9"],
+            ["Expression", "#6366f1"],
             ["Mood", "#ec4899"],
             ["Regulation", "#10b981"],
           ].map(([label, color]) => (

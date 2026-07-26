@@ -10,6 +10,8 @@ const DAY = 86_400_000;
 /** How far above the demonstrated ceiling we still ask (acts as the probe). */
 const LADDER_BUFFER = 3;
 const BATCH_SIZE = 5;
+/** Max questions from a single domain per check-in, for variety. */
+const PER_DOMAIN_CAP = 2;
 
 function canRate(item: Item, rater: Rater): boolean {
   if (item.context === "any") return true;
@@ -18,22 +20,15 @@ function canRate(item: Item, rater: Rater): boolean {
   return rater.role === "parent";
 }
 
-export interface BatchGroup {
-  domainId: string;
-  domainName: string;
-  stem: string;
-  items: Item[];
-}
-
 /**
- * Pick the next ~5 items for a rater:
+ * Pick the next ~5 items for a rater as one flat list:
  *  - only items the rater can meaningfully answer,
  *  - skip ladder items far above Levi's demonstrated ceiling,
  *  - prioritize by how overdue the item is for this rater and domain weight,
  *  - boost items other raters answered recently (calibration overlap),
- *  - group into at most 2-3 domains so the form reads smoothly.
+ *  - cap items per domain so no area monopolizes a check-in.
  */
-export async function buildBatch(raterId: string): Promise<BatchGroup[]> {
+export async function buildBatch(raterId: string): Promise<Item[]> {
   const db = await getDb();
   const now = Date.now();
   const since = new Date(now - 120 * DAY);
@@ -129,38 +124,23 @@ export async function buildBatch(raterId: string): Promise<BatchGroup[]> {
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Group into at most 3 domains and 5 items, max 3 items per domain so a
-  // single high-weight domain never monopolizes a check-in.
-  const byDomain = new Map<string, { item: Item; score: number }[]>();
+  // Take the top 5 with a per-domain cap so one area never monopolizes.
+  const picked: Item[] = [];
+  const perDomain = new Map<string, number>();
   for (const c of scored) {
-    const list = byDomain.get(c.item.domain) ?? [];
-    list.push(c);
-    byDomain.set(c.item.domain, list);
+    if (picked.length >= BATCH_SIZE) break;
+    const count = perDomain.get(c.item.domain) ?? 0;
+    if (count >= PER_DOMAIN_CAP) continue;
+    picked.push(c.item);
+    perDomain.set(c.item.domain, count + 1);
   }
-  const top3Sum = (list: { score: number }[]) =>
-    list.slice(0, 3).reduce((s, c) => s + c.score, 0);
-  const domainOrder = [...byDomain.entries()].sort(
-    (a, b) => top3Sum(b[1]) - top3Sum(a[1])
-  );
 
-  const groups: BatchGroup[] = [];
-  let taken = 0;
-  for (const [domainId, list] of domainOrder) {
-    if (taken >= BATCH_SIZE || groups.length >= 3) break;
-    const meta = DOMAIN_MAP[domainId];
-    const take = list
-      .slice(0, Math.min(3, BATCH_SIZE - taken))
-      .map((c) => c.item)
-      // ladders read best easiest-first
-      .sort((a, b) => (a.difficulty ?? 999) - (b.difficulty ?? 999));
-    if (take.length === 0) continue;
-    groups.push({
-      domainId,
-      domainName: meta.name,
-      stem: meta.stem,
-      items: take,
-    });
-    taken += take.length;
-  }
-  return groups;
+  // Order: same-domain items adjacent (no headers shown), ladders easiest-first.
+  const domainRank = new Map(DOMAINS.map((d, i) => [d.id, i]));
+  picked.sort((a, b) => {
+    const dr = (domainRank.get(a.domain) ?? 99) - (domainRank.get(b.domain) ?? 99);
+    if (dr !== 0) return dr;
+    return (a.difficulty ?? 999) - (b.difficulty ?? 999);
+  });
+  return picked;
 }

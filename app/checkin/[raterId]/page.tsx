@@ -17,7 +17,7 @@ export default async function CheckinPage({
   const [rater] = await db.select().from(raters).where(eq(raters.id, raterId));
   if (!rater) notFound();
 
-  const groups = await buildBatch(raterId);
+  const items = await buildBatch(raterId);
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
@@ -47,7 +47,7 @@ export default async function CheckinPage({
       <CheckinForm
         raterId={rater.id}
         raterName={rater.name}
-        groups={groups}
+        items={items}
       />
     </main>
   );

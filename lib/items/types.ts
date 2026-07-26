@@ -1,7 +1,10 @@
 // Core types for the NET3-derived item bank.
 
 export type DomainId =
-  | "communication"
+  | "speech"
+  | "aac"
+  | "gesture"
+  | "receptive"
   | "social"
   | "cognition"
   | "dls"
@@ -37,7 +40,7 @@ export interface Scale {
 export interface Item {
   id: string;
   domain: DomainId;
-  text: string; // phrased about Levi, fits under the domain's question stem
+  text: string; // fully self-contained question about Levi
   example?: string;
   scale: ScaleId;
   /** true when a higher raw value indicates something good (a skill / positive state) */
@@ -57,8 +60,6 @@ export interface DomainMeta {
   id: DomainId;
   name: string;
   shortName: string;
-  /** question stem shown above the item group during a check-in */
-  stem: string;
   /** default weight in the composite (all weights sum to 100) */
   defaultWeight: number;
   /** whether this domain uses ladder (ceiling/skip) logic */
