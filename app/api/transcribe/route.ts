@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
 
-// Transcribes a short voice note with OpenAI Whisper.
-// Requires OPENAI_API_KEY (in .env.local locally, or Vercel env settings).
+// Transcribes a recorded audio clip with OpenAI Whisper.
 export async function POST(req: Request) {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) {
-    return NextResponse.json(
-      { error: "Dictation isn't set up yet — ask Miki to add the OpenAI key." },
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return Response.json(
+      { error: "Dictation isn't set up yet (missing OPENAI_API_KEY)." },
       { status: 503 }
     );
   }
@@ -14,28 +13,28 @@ export async function POST(req: Request) {
   const form = await req.formData();
   const audio = form.get("audio");
   if (!(audio instanceof File) || audio.size === 0) {
-    return NextResponse.json({ error: "No audio received." }, { status: 400 });
+    return Response.json({ error: "No audio received." }, { status: 400 });
   }
 
   const upstream = new FormData();
-  upstream.append("file", audio);
+  upstream.append("file", audio, audio.name || "note.webm");
   upstream.append("model", "whisper-1");
-  upstream.append("language", "en");
 
   const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}` },
+    headers: { Authorization: `Bearer ${apiKey}` },
     body: upstream,
   });
 
   if (!res.ok) {
-    console.error("Whisper error:", res.status, await res.text());
-    return NextResponse.json(
+    const detail = await res.text().catch(() => "");
+    console.error("Whisper transcription failed:", res.status, detail);
+    return Response.json(
       { error: "Transcription failed — please try again or type instead." },
       { status: 502 }
     );
   }
 
   const data = (await res.json()) as { text?: string };
-  return NextResponse.json({ text: data.text ?? "" });
+  return Response.json({ text: data.text ?? "" });
 }
