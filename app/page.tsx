@@ -7,7 +7,7 @@ export default async function Home() {
   const db = await getDb();
   const allRaters = (await db.select().from(raters))
     .filter((r) => r.active)
-    .sort((a, b) => a.sort - b.sort);
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 py-12">
@@ -21,34 +21,32 @@ export default async function Home() {
           minute.
         </p>
 
-        <div className="mt-8 grid grid-cols-2 gap-3">
+        <div className="mt-8 grid grid-cols-2 gap-2.5">
           {allRaters.map((r) => (
             <Link
               key={r.id}
               href={`/checkin/${r.id}`}
-              className="group rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:-translate-y-0.5"
+              className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-sm transition hover:shadow-md hover:-translate-y-0.5"
             >
               <div
-                className="mb-3 flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold text-white"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
                 style={{ backgroundColor: r.color }}
               >
                 {r.name[0]}
               </div>
-              <div className="text-lg font-semibold">{r.name}</div>
-              <div className="text-sm text-stone-500">{r.roleLabel}</div>
+              <div className="truncate text-base font-semibold">{r.name}</div>
             </Link>
           ))}
           <Link
             href="/join"
-            className="group flex flex-col items-start justify-center rounded-2xl border-2 border-dashed border-stone-300 p-5 transition hover:border-indigo-400 hover:bg-indigo-50/40"
+            className="group col-span-2 flex items-center gap-3 rounded-xl border-2 border-dashed border-stone-300 px-4 py-3 transition hover:border-indigo-400 hover:bg-indigo-50/40"
           >
-            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-stone-200 text-lg font-bold text-stone-500 transition group-hover:bg-indigo-100 group-hover:text-indigo-600">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-200 text-base font-bold text-stone-500 transition group-hover:bg-indigo-100 group-hover:text-indigo-600">
               +
             </div>
-            <div className="text-lg font-semibold text-stone-600 group-hover:text-indigo-700">
+            <div className="text-base font-semibold text-stone-600 group-hover:text-indigo-700">
               I&apos;m new — add me
             </div>
-            <div className="text-sm text-stone-400">Takes 10 seconds</div>
           </Link>
         </div>
 
