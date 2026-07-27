@@ -68,6 +68,7 @@ const SEED_RATERS: (typeof schema.raters.$inferInsert)[] = [
   { id: "giuliane", name: "Giuliane", role: "nanny", roleLabel: "Nanny", color: "#8b5cf6", sort: 6 },
   { id: "beca", name: "Beca", role: "nanny", roleLabel: "Nanny", color: "#f97316", sort: 7 },
   { id: "heidi", name: "Heidi", role: "babysitter", roleLabel: "Babysitter", color: "#14b8a6", sort: 8 },
+  { id: "ana", name: "Ana", role: "nanny", roleLabel: "Nanny", color: "#e11d48", sort: 9 },
 ];
 
 async function init(db: Db) {

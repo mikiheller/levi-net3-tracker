@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import {
   getDb,
   checkins,
@@ -55,6 +56,57 @@ export async function submitCheckin(payload: CheckinPayload) {
   }
   revalidatePath("/dashboard");
   return { ok: true };
+}
+
+// ── Self-serve onboarding ("I'm new, add me") ──────────────────────────────
+
+const JOIN_ROLES: Record<string, { role: string; roleLabel: string }> = {
+  family: { role: "parent", roleLabel: "Family" },
+  nanny: { role: "nanny", roleLabel: "Nanny / babysitter" },
+  therapist: { role: "professional", roleLabel: "Therapist" },
+  school: { role: "professional", roleLabel: "School staff" },
+};
+
+const JOIN_COLORS = [
+  "#e11d48", "#7c3aed", "#0891b2", "#65a30d", "#d97706",
+  "#db2777", "#4f46e5", "#059669", "#b45309", "#0284c7",
+];
+
+export async function joinTeam(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim();
+  const roleKey = String(formData.get("role") ?? "");
+  const roleInfo = JOIN_ROLES[roleKey];
+  if (!name || !roleInfo) redirect("/join");
+
+  const db = await getDb();
+  const existing = await db.select().from(raters);
+
+  // Reuse an existing entry with the same name (probably the same person).
+  const match = existing.find(
+    (r) => r.name.toLowerCase() === name.toLowerCase()
+  );
+  if (match) {
+    if (!match.active) {
+      await db.update(raters).set({ active: true }).where(eq(raters.id, match.id));
+    }
+    revalidatePath("/");
+    redirect(`/checkin/${match.id}`);
+  }
+
+  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "rater";
+  let id = base;
+  for (let n = 2; existing.some((r) => r.id === id); n++) id = `${base}-${n}`;
+
+  await db.insert(raters).values({
+    id,
+    name,
+    role: roleInfo.role,
+    roleLabel: roleInfo.roleLabel,
+    color: JOIN_COLORS[existing.length % JOIN_COLORS.length],
+    sort: Math.max(0, ...existing.map((r) => r.sort)) + 1,
+  });
+  revalidatePath("/");
+  redirect(`/checkin/${id}`);
 }
 
 // ── Admin ──────────────────────────────────────────────────────────────────

@@ -38,6 +38,18 @@ export default async function Home() {
               <div className="text-sm text-stone-500">{r.roleLabel}</div>
             </Link>
           ))}
+          <Link
+            href="/join"
+            className="group flex flex-col items-start justify-center rounded-2xl border-2 border-dashed border-stone-300 p-5 transition hover:border-indigo-400 hover:bg-indigo-50/40"
+          >
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-stone-200 text-lg font-bold text-stone-500 transition group-hover:bg-indigo-100 group-hover:text-indigo-600">
+              +
+            </div>
+            <div className="text-lg font-semibold text-stone-600 group-hover:text-indigo-700">
+              I&apos;m new — add me
+            </div>
+            <div className="text-sm text-stone-400">Takes 10 seconds</div>
+          </Link>
         </div>
 
       </div>
