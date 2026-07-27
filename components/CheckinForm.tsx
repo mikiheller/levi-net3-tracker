@@ -39,6 +39,8 @@ const MOOD_FLAG_OPTIONS = [
   "Sad",
   "Angry",
   "Agitated",
+  "Dysregulated",
+  "Amped",
   "Uncomfortable",
   "Sick",
   "Tired",
