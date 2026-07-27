@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SCALES, STEM } from "@/lib/items/scales";
 import type { Item } from "@/lib/items/types";
 import { submitCheckin } from "@/app/actions";
@@ -49,20 +49,21 @@ type Answer = { value: number | null; isNa: boolean };
 
 export default function CheckinForm({
   raterId,
-  raterName,
   items,
+  mode,
 }: {
   raterId: string;
-  raterName: string;
   items: Item[];
+  /** "full" = snapshot + questions; "more" = bonus questions only */
+  mode: "full" | "more";
 }) {
+  const router = useRouter();
   const [snapshot, setSnapshot] = useState<Record<string, number | undefined>>({});
   const [moodFlags, setMoodFlags] = useState<string[]>([]);
   const [moodOther, setMoodOther] = useState("");
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
 
   // Voice dictation for the note field (recorded here, transcribed by Whisper
   // on the server).
@@ -121,10 +122,14 @@ export default function CheckinForm({
     setRecState("recording");
   }
 
+  const showSnapshot = mode === "full";
   const answeredCount =
     Object.keys(answers).length +
-    SNAPSHOT_METRICS.filter((m) => snapshot[m.key] !== undefined).length;
-  const totalCount = items.length + SNAPSHOT_METRICS.length;
+    (showSnapshot
+      ? SNAPSHOT_METRICS.filter((m) => snapshot[m.key] !== undefined).length
+      : 0);
+  const totalCount =
+    items.length + (showSnapshot ? SNAPSHOT_METRICS.length : 0);
   // Unanswered questions are fine — people can't always judge everything.
   const canSubmit = answeredCount > 0;
   const moodIsWorse = snapshot.mood !== undefined && snapshot.mood < 2;
@@ -157,39 +162,13 @@ export default function CheckinForm({
           isNa: answers[i.id].isNa,
         })),
     });
-    setDone(true);
-  }
-
-  if (done) {
-    return (
-      <div className="rounded-2xl border border-stone-200 bg-white p-10 text-center shadow-sm">
-        <div className="text-5xl">🎉</div>
-        <h2 className="mt-4 text-2xl font-bold">Thank you, {raterName}!</h2>
-        <p className="mt-2 text-stone-500">
-          Logged. Every check-in makes the picture of Levi&apos;s progress
-          sharper.
-        </p>
-        <div className="mt-6 flex justify-center gap-3">
-          <Link
-            href="/"
-            className="rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-stone-700"
-          >
-            Done
-          </Link>
-          <Link
-            href="/dashboard"
-            className="rounded-xl border border-stone-300 px-5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
-          >
-            See dashboard
-          </Link>
-        </div>
-      </div>
-    );
+    router.replace(`/checkin/${raterId}/thanks`);
   }
 
   return (
     <div className="space-y-6 pb-28">
       {/* Snapshot */}
+      {showSnapshot && (
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
         <h2 className="font-semibold">Today, compared to a typical day</h2>
         <p className="mt-0.5 text-sm text-stone-500">
@@ -257,13 +236,15 @@ export default function CheckinForm({
           ))}
         </div>
       </section>
+      )}
 
       {/* Weekly questions — one flat list, one shared prompt */}
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
         <h2 className="font-semibold">{STEM}</h2>
         <p className="mt-0.5 text-sm text-stone-500">
-          Different questions each time. Skip anything you didn&apos;t get a
-          chance to observe.
+          {mode === "more"
+            ? "Bonus round — answer as many or as few as you like."
+            : "Different questions each time. Skip anything you didn't get a chance to observe."}
         </p>
         <div className="mt-4 space-y-6">
           {items.map((item) => {

@@ -9,10 +9,13 @@ export const dynamic = "force-dynamic";
 
 export default async function CheckinPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ raterId: string }>;
+  searchParams: Promise<{ more?: string }>;
 }) {
   const { raterId } = await params;
+  const mode = (await searchParams).more ? ("more" as const) : ("full" as const);
   const db = await getDb();
   const [rater] = await db.select().from(raters).where(eq(raters.id, raterId));
   if (!rater) notFound();
@@ -30,9 +33,13 @@ export default async function CheckinPage({
             {rater.name[0]}
           </div>
           <div>
-            <div className="font-semibold leading-tight">Hi {rater.name}!</div>
+            <div className="font-semibold leading-tight">
+              {mode === "more" ? `Thanks, ${rater.name}!` : `Hi ${rater.name}!`}
+            </div>
             <div className="text-sm text-stone-500">
-              Quick check-in about Levi
+              {mode === "more"
+                ? "A few bonus questions"
+                : "Quick check-in about Levi"}
             </div>
           </div>
         </div>
@@ -44,11 +51,7 @@ export default async function CheckinPage({
         </Link>
       </div>
 
-      <CheckinForm
-        raterId={rater.id}
-        raterName={rater.name}
-        items={items}
-      />
+      <CheckinForm raterId={rater.id} items={items} mode={mode} />
     </main>
   );
 }
