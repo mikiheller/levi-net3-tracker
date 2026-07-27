@@ -124,13 +124,12 @@ export async function getDashboardData(): Promise<DashboardData> {
     };
   });
 
-  // Composite: weighted mean across domains (excluding qol) per week.
+  // Composite: weighted mean across domains per week.
   const composite: WeekPoint[] = weeks.map((w) => {
     let num = 0;
     let den = 0;
     const perRater: Record<string, number | null> = {};
     for (const ds of domainSeries) {
-      if (ds.domainId === "qol") continue;
       const p = ds.points.find((pt) => pt.week === w);
       if (p && p.blended !== null) {
         const wt = weights[ds.domainId] ?? 0;

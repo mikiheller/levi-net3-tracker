@@ -30,7 +30,9 @@ CREATE TABLE IF NOT EXISTS checkins (
   snap_alertness integer,
   snap_communication integer,
   snap_mood integer,
-  snap_regulation integer
+  snap_regulation integer,
+  mood_flags text,
+  mood_other text
 );
 CREATE TABLE IF NOT EXISTS responses (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -15,9 +15,7 @@ const PER_DOMAIN_CAP = 2;
 
 function canRate(item: Item, rater: Rater): boolean {
   if (item.context === "any") return true;
-  if (item.context === "home")
-    return ["parent", "nanny", "babysitter"].includes(rater.role);
-  return rater.role === "parent";
+  return ["parent", "nanny", "babysitter"].includes(rater.role);
 }
 
 /**

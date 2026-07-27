@@ -31,6 +31,9 @@ export const checkins = pgTable("checkins", {
   snapCommunication: integer("snap_communication"),
   snapMood: integer("snap_mood"),
   snapRegulation: integer("snap_regulation"),
+  // When mood is worse than typical: what it looked like (comma-separated)
+  moodFlags: text("mood_flags"),
+  moodOther: text("mood_other"),
 });
 
 export const responses = pgTable("responses", {

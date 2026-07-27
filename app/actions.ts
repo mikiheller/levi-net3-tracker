@@ -15,11 +15,13 @@ export interface CheckinPayload {
   raterId: string;
   note: string;
   snapshot: {
-    alertness: number;
-    communication: number;
-    mood: number;
-    regulation: number;
+    alertness: number | null;
+    communication: number | null;
+    mood: number | null;
+    regulation: number | null;
   };
+  moodFlags: string[];
+  moodOther: string;
   answers: { itemId: string; value: number | null; isNa: boolean }[];
 }
 
@@ -34,6 +36,8 @@ export async function submitCheckin(payload: CheckinPayload) {
       snapCommunication: payload.snapshot.communication,
       snapMood: payload.snapshot.mood,
       snapRegulation: payload.snapshot.regulation,
+      moodFlags: payload.moodFlags.length ? payload.moodFlags.join(", ") : null,
+      moodOther: payload.moodOther.trim() || null,
     })
     .returning();
 

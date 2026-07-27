@@ -2,9 +2,8 @@ import type { Item as ItemT } from "./types";
 
 // The item bank, distilled from NET3 (Frazier et al.) plus custom
 // communication ladders built for very early speech re-emergence (DEE-SWAS).
-// Item texts are FRAGMENTS that continue a shared stem (see SCALE_STEMS in
-// scales.ts), e.g. "This past week, how often did he…" + "Try to say a word
-// when prompted?". QoL statements and the sleep-hours item are full sentences.
+// Every item shares one stem (STEM in scales.ts): "This past week, how often
+// did he…" — item texts are fragments that continue it.
 //
 // difficulty: rank within a developmental ladder (ladder domains only).
 // cadenceDays: how often the SAME rater should re-answer this item.
@@ -84,69 +83,33 @@ export const ITEMS: ItemT[] = [
   { id: "cog_12", domain: "cognition", text: "Seem foggy, sleepy, or hard to reach during the day?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 7, minRaters: 3 },
 
   // ── Daily Living Skills (NET3 Practical Living Skills, ladder) ───────────
-  { id: "dls_01", domain: "dls", text: "Show that he is hungry and wants to eat?", scale: "independence4", higherIsBetter: true, difficulty: 1, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_02", domain: "dls", text: "Drink from a cup, straw, or sippy cup?", scale: "independence4", higherIsBetter: true, difficulty: 2, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_03", domain: "dls", text: "Eat with a spoon or fork?", scale: "independence4", higherIsBetter: true, difficulty: 3, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_04", domain: "dls", text: "Wipe his face if given a cloth?", scale: "independence4", higherIsBetter: true, difficulty: 4, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_05", domain: "dls", text: "Undress himself?", scale: "independence4", higherIsBetter: true, difficulty: 5, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_06", domain: "dls", text: "Ask for food or drink when hungry or thirsty?", example: "Words, signs, or gestures", scale: "independence4", higherIsBetter: true, difficulty: 6, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_07", domain: "dls", text: "Let someone know he needs the bathroom?", scale: "independence4", higherIsBetter: true, difficulty: 7, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_08", domain: "dls", text: "Use the toilet?", scale: "independence4", higherIsBetter: true, difficulty: 8, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_09", domain: "dls", text: "Stay dry during the day (bladder control)?", scale: "independence4", higherIsBetter: true, difficulty: 9, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_10", domain: "dls", text: "Open and close doors using knobs or handles?", scale: "independence4", higherIsBetter: true, difficulty: 10, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_11", domain: "dls", text: "Get a snack from where it's kept?", scale: "independence4", higherIsBetter: true, difficulty: 11, context: "home", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_12", domain: "dls", text: "Open containers or packages?", scale: "independence4", higherIsBetter: true, difficulty: 12, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_13", domain: "dls", text: "Put on his shoes?", scale: "independence4", higherIsBetter: true, difficulty: 13, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_14", domain: "dls", text: "Use a tablet, TV remote, or other familiar device?", scale: "independence4", higherIsBetter: true, difficulty: 14, context: "home", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_15", domain: "dls", text: "Play by himself for at least two minutes?", scale: "independence4", higherIsBetter: true, difficulty: 15, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_16", domain: "dls", text: "Play a simple game with someone for at least five minutes?", scale: "independence4", higherIsBetter: true, difficulty: 16, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_17", domain: "dls", text: "Pour liquid into a cup?", scale: "independence4", higherIsBetter: true, difficulty: 17, context: "home", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_18", domain: "dls", text: "Cover his mouth when coughing or sneezing?", scale: "independence4", higherIsBetter: true, difficulty: 18, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_19", domain: "dls", text: "Put away toys or materials when asked?", scale: "independence4", higherIsBetter: true, difficulty: 19, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_20", domain: "dls", text: "Brush his teeth?", scale: "independence4", higherIsBetter: true, difficulty: 20, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_21", domain: "dls", text: "Wash his hair and body in the bath or shower?", scale: "independence4", higherIsBetter: true, difficulty: 21, context: "home", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_22", domain: "dls", text: "Dress himself?", scale: "independence4", higherIsBetter: true, difficulty: 22, context: "home", cadenceDays: 14, minRaters: 2 },
-  { id: "dls_23", domain: "dls", text: "Stay close to his adult in public places?", scale: "independence4", higherIsBetter: true, difficulty: 23, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_24", domain: "dls", text: "Adjust his behavior to the situation?", example: "Quieter in a library or classroom than at the playground", scale: "independence4", higherIsBetter: true, difficulty: 24, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_25", domain: "dls", text: "Walk safely in public?", example: "Stops at curbs, stays aware of cars", scale: "independence4", higherIsBetter: true, difficulty: 25, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "dls_26", domain: "dls", text: "Show caution in dangerous situations?", example: "Around a hot stove, sharp objects, stairs", scale: "independence4", higherIsBetter: true, difficulty: 26, context: "any", cadenceDays: 21, minRaters: 2 },
-
-  // ── Mood & Regulation (NET3 Mood & Irritability) ─────────────────────────
-  { id: "mood_01", domain: "mood", text: "Seem easily frustrated?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 3 },
-  { id: "mood_02", domain: "mood", text: "Seem irritable?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 3 },
-  { id: "mood_03", domain: "mood", text: "Lose his temper quickly?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_04", domain: "mood", text: "Stay upset or agitated for a long time once upset?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_05", domain: "mood", text: "Seem sad or down for no clear reason?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_06", domain: "mood", text: "Seem uninterested in things he usually enjoys?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_07", domain: "mood", text: "Seem more tired than usual, without a clear reason?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_08", domain: "mood", text: "Cry or become teary without an obvious trigger?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_09", domain: "mood", text: "Seem less responsive to praise, rewards, or fun things than usual?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 2 },
-  { id: "mood_10", domain: "mood", text: "Seem happy and content?", scale: "freq5", higherIsBetter: true, context: "any", cadenceDays: 7, minRaters: 3 },
-  { id: "mood_11", domain: "mood", text: "Recover quickly after getting upset?", scale: "freq5", higherIsBetter: true, context: "any", cadenceDays: 10, minRaters: 3 },
-  { id: "mood_12", domain: "mood", text: "Swing rapidly between high and low mood or energy?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-
-  // ── Challenging Behavior (NET3 Severe & Challenging Behavior) ────────────
-  { id: "beh_01", domain: "behavior", text: "Aggression toward other people, without injury?", example: "Hitting, pushing, grabbing, biting attempts", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 3 },
-  { id: "beh_02", domain: "behavior", text: "Aggression toward other people causing injury?", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "beh_03", domain: "behavior", text: "Throwing, kicking, or breaking things when upset?", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "beh_04", domain: "behavior", text: "Tantrums or periods of major upset?", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 10, minRaters: 3 },
-  { id: "beh_05", domain: "behavior", text: "Mild self-injury?", example: "Skin picking, light self-biting, without breaking skin", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "beh_06", domain: "behavior", text: "Forceful self-injury?", example: "Head hitting or banging, hard biting", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "beh_07", domain: "behavior", text: "Wandering off or trying to run away?", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "beh_08", domain: "behavior", text: "Refusing to follow instructions?", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-  { id: "beh_09", domain: "behavior", text: "Mouthing or eating things that aren't food?", scale: "problem5", higherIsBetter: false, context: "any", cadenceDays: 14, minRaters: 2 },
-
-  // ── Sleep (NET3 Sleep — home context; very relevant for DEE-SWAS) ────────
-  { id: "slp_01", domain: "sleep", text: "Take longer than 30 minutes to fall asleep?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_02", domain: "sleep", text: "Wake up in the middle of the night?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_03", domain: "sleep", text: "Wake up too early and not go back to sleep?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_04", domain: "sleep", text: "Sleep restlessly?", example: "Tossing and turning, moving around the bed", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_05", domain: "sleep", text: "Snore loudly, gasp, or pause breathing during sleep?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_06", domain: "sleep", text: "Have night terrors or wake up seeming very frightened?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_07", domain: "sleep", text: "Need medication to fall asleep?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_08", domain: "sleep", text: "Seem tired or low-energy in the morning after a poor night?", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 14, minRaters: 1 },
-  { id: "slp_09", domain: "sleep", text: "Have unusual movements or events during sleep?", example: "Twitching, jerking, staring episodes, unusual awakenings", scale: "sleepFreq5", higherIsBetter: false, context: "home", cadenceDays: 7, minRaters: 1 },
-  { id: "slp_10", domain: "sleep", text: "On average this week, about how many hours did he sleep per night?", scale: "sleepHours", higherIsBetter: true, context: "home", cadenceDays: 14, minRaters: 1 },
+  // Asked as frequency of doing it on his own, to fit the shared stem.
+  { id: "dls_01", domain: "dls", text: "Show that he was hungry and wanted to eat?", scale: "freq5", higherIsBetter: true, difficulty: 1, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_02", domain: "dls", text: "Drink from a cup, straw, or sippy cup on his own?", scale: "freq5", higherIsBetter: true, difficulty: 2, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_03", domain: "dls", text: "Eat with a spoon or fork on his own?", scale: "freq5", higherIsBetter: true, difficulty: 3, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_04", domain: "dls", text: "Wipe his face on his own when given a cloth?", scale: "freq5", higherIsBetter: true, difficulty: 4, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_05", domain: "dls", text: "Undress himself without help?", scale: "freq5", higherIsBetter: true, difficulty: 5, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_06", domain: "dls", text: "Ask for food or drink when hungry or thirsty?", example: "Words, signs, or gestures", scale: "freq5", higherIsBetter: true, difficulty: 6, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_07", domain: "dls", text: "Let someone know he needed the bathroom?", scale: "freq5", higherIsBetter: true, difficulty: 7, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_08", domain: "dls", text: "Use the toilet without help?", scale: "freq5", higherIsBetter: true, difficulty: 8, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_09", domain: "dls", text: "Stay dry during the day?", scale: "freq5", higherIsBetter: true, difficulty: 9, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_10", domain: "dls", text: "Open and close doors using knobs or handles?", scale: "freq5", higherIsBetter: true, difficulty: 10, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_11", domain: "dls", text: "Get a snack on his own from where it's kept?", scale: "freq5", higherIsBetter: true, difficulty: 11, context: "home", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_12", domain: "dls", text: "Open containers or packages on his own?", scale: "freq5", higherIsBetter: true, difficulty: 12, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_13", domain: "dls", text: "Put on his shoes without help?", scale: "freq5", higherIsBetter: true, difficulty: 13, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_14", domain: "dls", text: "Use a tablet, TV remote, or other familiar device on his own?", scale: "freq5", higherIsBetter: true, difficulty: 14, context: "home", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_15", domain: "dls", text: "Play by himself for at least two minutes?", scale: "freq5", higherIsBetter: true, difficulty: 15, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_16", domain: "dls", text: "Play a simple game with someone for at least five minutes?", scale: "freq5", higherIsBetter: true, difficulty: 16, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_17", domain: "dls", text: "Pour liquid into a cup without help?", scale: "freq5", higherIsBetter: true, difficulty: 17, context: "home", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_18", domain: "dls", text: "Cover his mouth when coughing or sneezing?", scale: "freq5", higherIsBetter: true, difficulty: 18, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_19", domain: "dls", text: "Put away toys or materials when asked?", scale: "freq5", higherIsBetter: true, difficulty: 19, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_20", domain: "dls", text: "Brush his teeth without help?", scale: "freq5", higherIsBetter: true, difficulty: 20, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_21", domain: "dls", text: "Wash his hair and body in the bath or shower without help?", scale: "freq5", higherIsBetter: true, difficulty: 21, context: "home", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_22", domain: "dls", text: "Dress himself without help?", scale: "freq5", higherIsBetter: true, difficulty: 22, context: "home", cadenceDays: 14, minRaters: 2 },
+  { id: "dls_23", domain: "dls", text: "Stay close to his adult in public places?", scale: "freq5", higherIsBetter: true, difficulty: 23, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_24", domain: "dls", text: "Adjust his behavior to the situation?", example: "Quieter in a library or classroom than at the playground", scale: "freq5", higherIsBetter: true, difficulty: 24, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_25", domain: "dls", text: "Walk safely in public?", example: "Stops at curbs, stays aware of cars", scale: "freq5", higherIsBetter: true, difficulty: 25, context: "any", cadenceDays: 21, minRaters: 2 },
+  { id: "dls_26", domain: "dls", text: "Show caution in dangerous situations?", example: "Around a hot stove, sharp objects, stairs", scale: "freq5", higherIsBetter: true, difficulty: 26, context: "any", cadenceDays: 21, minRaters: 2 },
 
   // ── Repetitive & Sensory (NET3 RRB items) ────────────────────────────────
   { id: "rrb_01", domain: "rrb", text: "Flap his hands or move them in an unusual way?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
@@ -162,38 +125,21 @@ export const ITEMS: ItemT[] = [
   { id: "rrb_11", domain: "rrb", text: "Seem fascinated by sensory experiences?", example: "Staring at lights, fans, running water, spinning objects", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
   { id: "rrb_12", domain: "rrb", text: "Seem fixated on one interest or activity?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
 
-  // ── Anxiety (NET3 Anxiety, observable subset) ────────────────────────────
-  { id: "anx_01", domain: "anxiety", text: "Seem fearful or scared without an obvious reason?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "anx_02", domain: "anxiety", text: "Seem nervous in new situations or with unfamiliar people?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "anx_03", domain: "anxiety", text: "Act clingy with familiar people, or get upset when separated from them?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "anx_04", domain: "anxiety", text: "Seem afraid of specific things?", example: "Certain sounds, animals, places, or objects", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "anx_05", domain: "anxiety", text: "Seem overwhelmed or anxious when there was too much going on?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
-  { id: "anx_06", domain: "anxiety", text: "Seem frozen or paralyzed by fear?", scale: "freq5", higherIsBetter: false, context: "any", cadenceDays: 21, minRaters: 2 },
-
   // ── Motor Skills (NET3 Motor, core ladder) ───────────────────────────────
-  { id: "mot_01", domain: "motor", text: "Walk independently?", scale: "difficulty4", higherIsBetter: false, difficulty: 1, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_02", domain: "motor", text: "Climb stairs?", example: "Using the railing is fine", scale: "difficulty4", higherIsBetter: false, difficulty: 2, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_03", domain: "motor", text: "Pick up small objects with thumb and fingers?", scale: "difficulty4", higherIsBetter: false, difficulty: 3, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_04", domain: "motor", text: "Run without falling?", scale: "difficulty4", higherIsBetter: false, difficulty: 4, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_05", domain: "motor", text: "Turn pages in a book?", scale: "difficulty4", higherIsBetter: false, difficulty: 5, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_06", domain: "motor", text: "Press small buttons on a touchscreen or device?", scale: "difficulty4", higherIsBetter: false, difficulty: 6, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_07", domain: "motor", text: "Hold a crayon or marker and make marks on paper?", scale: "difficulty4", higherIsBetter: false, difficulty: 7, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_08", domain: "motor", text: "Throw a ball?", scale: "difficulty4", higherIsBetter: false, difficulty: 8, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_09", domain: "motor", text: "Jump over small obstacles?", scale: "difficulty4", higherIsBetter: false, difficulty: 9, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_10", domain: "motor", text: "Catch a ball?", scale: "difficulty4", higherIsBetter: false, difficulty: 10, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_11", domain: "motor", text: "Color or draw within a large outline?", scale: "difficulty4", higherIsBetter: false, difficulty: 11, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_12", domain: "motor", text: "Use scissors?", scale: "difficulty4", higherIsBetter: false, difficulty: 12, context: "any", cadenceDays: 28, minRaters: 2 },
-  { id: "mot_13", domain: "motor", text: "Fasten a zipper?", scale: "difficulty4", higherIsBetter: false, difficulty: 13, context: "any", cadenceDays: 28, minRaters: 2 },
-
-  // ── Family & Quality of Life (parents only, monthly, not in composite) ───
-  { id: "qol_01", domain: "qol", text: "Over the past month, Levi appeared happy and content.", scale: "always5", higherIsBetter: true, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_02", domain: "qol", text: "Over the past month, Levi handled daily routines and transitions well.", scale: "always5", higherIsBetter: true, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_03", domain: "qol", text: "Over the past month, Levi's difficulties added stress to our home life.", scale: "agree5", higherIsBetter: false, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_04", domain: "qol", text: "Over the past month, our family was able to do social activities together.", scale: "always5", higherIsBetter: true, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_05", domain: "qol", text: "Over the past month, I felt tired and without energy as a result of caregiving.", scale: "agree5", higherIsBetter: false, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_06", domain: "qol", text: "Over the past month, I managed caregiving stress well.", scale: "agree5", higherIsBetter: true, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_07", domain: "qol", text: "Over the last month, Levi's quality of life has\u2026", scale: "change5", higherIsBetter: true, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
-  { id: "qol_08", domain: "qol", text: "Over the last month, my own quality of life has\u2026", scale: "change5", higherIsBetter: true, context: "parent", cadenceDays: 28, minRaters: 2, excludeFromComposite: true },
+  // Asked as frequency of successful performance, to fit the shared stem.
+  { id: "mot_01", domain: "motor", text: "Walk steadily without support?", scale: "freq5", higherIsBetter: true, difficulty: 1, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_02", domain: "motor", text: "Climb stairs smoothly?", example: "Using the railing is fine", scale: "freq5", higherIsBetter: true, difficulty: 2, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_03", domain: "motor", text: "Pick up small objects with his thumb and fingers?", scale: "freq5", higherIsBetter: true, difficulty: 3, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_04", domain: "motor", text: "Run without falling?", scale: "freq5", higherIsBetter: true, difficulty: 4, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_05", domain: "motor", text: "Turn pages in a book?", scale: "freq5", higherIsBetter: true, difficulty: 5, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_06", domain: "motor", text: "Press small buttons on a touchscreen accurately?", scale: "freq5", higherIsBetter: true, difficulty: 6, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_07", domain: "motor", text: "Hold a crayon or marker and make marks on paper?", scale: "freq5", higherIsBetter: true, difficulty: 7, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_08", domain: "motor", text: "Throw a ball?", scale: "freq5", higherIsBetter: true, difficulty: 8, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_09", domain: "motor", text: "Jump over small obstacles?", scale: "freq5", higherIsBetter: true, difficulty: 9, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_10", domain: "motor", text: "Catch a ball?", scale: "freq5", higherIsBetter: true, difficulty: 10, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_11", domain: "motor", text: "Color or draw within a large outline?", scale: "freq5", higherIsBetter: true, difficulty: 11, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_12", domain: "motor", text: "Use scissors?", scale: "freq5", higherIsBetter: true, difficulty: 12, context: "any", cadenceDays: 14, minRaters: 2 },
+  { id: "mot_13", domain: "motor", text: "Fasten a zipper?", scale: "freq5", higherIsBetter: true, difficulty: 13, context: "any", cadenceDays: 14, minRaters: 2 },
 ];
 
 export const ITEM_MAP: Record<string, ItemT> = Object.fromEntries(

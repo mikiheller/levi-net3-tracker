@@ -1,14 +1,14 @@
 import type { DomainMeta } from "./types";
 
 // Weights reflect priorities for tracking cognitive recovery in DEE-SWAS:
-// language (four separate tracks, 23 combined) and social connection first,
-// then cognition and independence. Editable in the admin portal.
+// verbal speech tied for first with social connection and cognition, motor
+// deliberately high, AAC ~1/3 of speech. Editable in the admin portal.
 export const DOMAINS: DomainMeta[] = [
   {
     id: "speech",
     name: "Verbal Speech",
     shortName: "Speech",
-    defaultWeight: 9,
+    defaultWeight: 17,
     isLadder: true,
     description:
       "Custom ladder from directed vocalizing through word approximations to meaningful single words. Built for very early speech re-emergence.",
@@ -28,7 +28,7 @@ export const DOMAINS: DomainMeta[] = [
     id: "gesture",
     name: "Gestures & Body",
     shortName: "Gestures",
-    defaultWeight: 4,
+    defaultWeight: 6,
     isLadder: true,
     description:
       "Nonverbal expressive communication: hand-leading, pointing, head shakes, social gestures, pointing to share.",
@@ -38,7 +38,7 @@ export const DOMAINS: DomainMeta[] = [
     id: "receptive",
     name: "Understanding (Receptive)",
     shortName: "Understanding",
-    defaultWeight: 5,
+    defaultWeight: 8,
     isLadder: true,
     description:
       "Receptive language: responding to name, following directions, identifying named objects, understanding questions.",
@@ -48,7 +48,7 @@ export const DOMAINS: DomainMeta[] = [
     id: "social",
     name: "Social Connection",
     shortName: "Social",
-    defaultWeight: 15,
+    defaultWeight: 17,
     isLadder: false,
     description:
       "Social interest, engagement and reciprocity (NET3 Social Communication scale).",
@@ -58,7 +58,7 @@ export const DOMAINS: DomainMeta[] = [
     id: "cognition",
     name: "Cognition & Attention",
     shortName: "Cognition",
-    defaultWeight: 15,
+    defaultWeight: 17,
     isLadder: false,
     description:
       "Alertness, responsiveness, attention, memory, learning and problem-solving (custom + NET3 ADHD items). Very sensitive to DEE-SWAS treatment effects.",
@@ -71,75 +71,27 @@ export const DOMAINS: DomainMeta[] = [
     defaultWeight: 13,
     isLadder: true,
     description:
-      "Practical skills ordered by developmental difficulty (NET3 Practical Living Skills).",
+      "Practical skills ordered by developmental difficulty (NET3 Practical Living Skills), asked as how often he did them on his own.",
     color: "#10b981",
-  },
-  {
-    id: "mood",
-    name: "Mood & Regulation",
-    shortName: "Mood",
-    defaultWeight: 8,
-    isLadder: false,
-    description: "Irritability, sadness, energy and emotional recovery (NET3 Mood scale).",
-    color: "#ec4899",
-  },
-  {
-    id: "behavior",
-    name: "Challenging Behavior",
-    shortName: "Behavior",
-    defaultWeight: 8,
-    isLadder: false,
-    description:
-      "Aggression, self-injury, elopement, tantrums (NET3 Severe & Challenging Behavior).",
-    color: "#ef4444",
-  },
-  {
-    id: "sleep",
-    name: "Sleep",
-    shortName: "Sleep",
-    defaultWeight: 8,
-    isLadder: false,
-    description:
-      "Sleep quality and unusual nighttime events — especially relevant for DEE-SWAS (epileptic activity occurs in sleep).",
-    color: "#8b5cf6",
   },
   {
     id: "rrb",
     name: "Repetitive & Sensory",
     shortName: "Repetitive",
-    defaultWeight: 5,
+    defaultWeight: 6,
     isLadder: false,
     description:
       "Repetitive behaviors, insistence on sameness, sensory sensitivities (NET3 RRB items).",
     color: "#f97316",
   },
   {
-    id: "anxiety",
-    name: "Anxiety",
-    shortName: "Anxiety",
-    defaultWeight: 3,
-    isLadder: false,
-    description: "Observable fear and distress (NET3 Anxiety scale, observable subset).",
-    color: "#14b8a6",
-  },
-  {
     id: "motor",
     name: "Motor Skills",
     shortName: "Motor",
-    defaultWeight: 2,
+    defaultWeight: 11,
     isLadder: true,
     description: "Gross and fine motor skills (NET3 Motor scale, core items).",
     color: "#84cc16",
-  },
-  {
-    id: "qol",
-    name: "Family & Quality of Life",
-    shortName: "QoL",
-    defaultWeight: 0,
-    isLadder: false,
-    description:
-      "Child and family quality of life (parents only, monthly). Tracked separately — not part of Levi's composite score.",
-    color: "#64748b",
   },
 ];
 

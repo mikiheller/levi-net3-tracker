@@ -2,14 +2,14 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { SCALES, SCALE_STEMS } from "@/lib/items/scales";
+import { SCALES, STEM } from "@/lib/items/scales";
 import type { Item } from "@/lib/items/types";
 import { submitCheckin } from "@/app/actions";
 
 const SNAPSHOT_METRICS = [
   {
     key: "alertness" as const,
-    label: "How tuned in was he? (noticing people, responding when you talked to him)",
+    label: "How responsive was he? (noticing people, reacting when you talked to him)",
     low: "Much less than usual",
     high: "Much more than usual",
   },
@@ -35,6 +35,15 @@ const SNAPSHOT_METRICS = [
 
 const SNAP_LABELS = ["−−", "−", "Typical", "+", "++"];
 
+const MOOD_FLAG_OPTIONS = [
+  "Sad",
+  "Angry",
+  "Agitated",
+  "Maybe just uncomfortable",
+  "Sick or tired",
+  "Other",
+];
+
 type Answer = { value: number | null; isNa: boolean };
 
 export default function CheckinForm({
@@ -47,6 +56,8 @@ export default function CheckinForm({
   items: Item[];
 }) {
   const [snapshot, setSnapshot] = useState<Record<string, number | undefined>>({});
+  const [moodFlags, setMoodFlags] = useState<string[]>([]);
+  const [moodOther, setMoodOther] = useState("");
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -113,27 +124,37 @@ export default function CheckinForm({
     Object.keys(answers).length +
     SNAPSHOT_METRICS.filter((m) => snapshot[m.key] !== undefined).length;
   const totalCount = items.length + SNAPSHOT_METRICS.length;
-  const complete =
-    SNAPSHOT_METRICS.every((m) => snapshot[m.key] !== undefined) &&
-    items.every((i) => answers[i.id] !== undefined);
+  // Unanswered questions are fine — people can't always judge everything.
+  const canSubmit = answeredCount > 0;
+  const moodIsWorse = snapshot.mood !== undefined && snapshot.mood < 2;
+
+  function toggleMoodFlag(flag: string) {
+    setMoodFlags((f) =>
+      f.includes(flag) ? f.filter((x) => x !== flag) : [...f, flag]
+    );
+  }
 
   async function handleSubmit() {
-    if (!complete || submitting) return;
+    if (!canSubmit || submitting) return;
     setSubmitting(true);
     await submitCheckin({
       raterId,
       note,
       snapshot: {
-        alertness: snapshot.alertness!,
-        communication: snapshot.communication!,
-        mood: snapshot.mood!,
-        regulation: snapshot.regulation!,
+        alertness: snapshot.alertness ?? null,
+        communication: snapshot.communication ?? null,
+        mood: snapshot.mood ?? null,
+        regulation: snapshot.regulation ?? null,
       },
-      answers: items.map((i) => ({
-        itemId: i.id,
-        value: answers[i.id].value,
-        isNa: answers[i.id].isNa,
-      })),
+      moodFlags: moodIsWorse ? moodFlags : [],
+      moodOther: moodIsWorse && moodFlags.includes("Other") ? moodOther : "",
+      answers: items
+        .filter((i) => answers[i.id] !== undefined)
+        .map((i) => ({
+          itemId: i.id,
+          value: answers[i.id].value,
+          isNa: answers[i.id].isNa,
+        })),
     });
     setDone(true);
   }
@@ -199,27 +220,56 @@ export default function CheckinForm({
                 <span>{m.low}</span>
                 <span>{m.high}</span>
               </div>
+              {m.key === "mood" && moodIsWorse && (
+                <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
+                  <div className="text-sm font-medium">
+                    What seemed off about him?
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {MOOD_FLAG_OPTIONS.map((flag) => (
+                      <button
+                        key={flag}
+                        type="button"
+                        onClick={() => toggleMoodFlag(flag)}
+                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                          moodFlags.includes(flag)
+                            ? "border-indigo-600 bg-indigo-600 text-white"
+                            : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
+                        }`}
+                      >
+                        {flag}
+                      </button>
+                    ))}
+                  </div>
+                  {moodFlags.includes("Other") && (
+                    <input
+                      type="text"
+                      value={moodOther}
+                      onChange={(e) => setMoodOther(e.target.value)}
+                      placeholder="What was it? (optional)"
+                      className="mt-2 w-full rounded-lg border border-stone-200 bg-white p-2 text-sm outline-none placeholder:text-stone-400 focus:border-indigo-400"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
       </section>
 
-      {/* Weekly questions — one flat list, no category headers */}
+      {/* Weekly questions — one flat list, one shared prompt */}
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-        <h2 className="font-semibold">A few quick questions</h2>
+        <h2 className="font-semibold">{STEM}</h2>
         <p className="mt-0.5 text-sm text-stone-500">
-          Different ones each time — the app rotates through everything.
+          Different questions each time. Skip anything you didn&apos;t get a
+          chance to observe.
         </p>
         <div className="mt-4 space-y-6">
           {items.map((item) => {
             const scale = SCALES[item.scale];
             const a = answers[item.id];
-            const stem = SCALE_STEMS[item.scale];
             return (
               <div key={item.id}>
-                {stem && (
-                  <div className="text-xs text-stone-400">{stem}</div>
-                )}
                 <div className="text-[15px] font-medium leading-snug">
                   {item.text}
                 </div>
@@ -355,7 +405,7 @@ export default function CheckinForm({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!complete || submitting}
+            disabled={!canSubmit || submitting}
             className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition enabled:hover:bg-indigo-500 disabled:opacity-40"
           >
             {submitting ? "Saving…" : "Submit"}

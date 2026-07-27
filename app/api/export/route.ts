@@ -1,7 +1,7 @@
 import { getDb, responses, checkins, raters } from "@/lib/db";
 import { ITEM_MAP } from "@/lib/items/items";
 import { DOMAIN_MAP } from "@/lib/items/domains";
-import { SCALES, SCALE_STEMS, toGoodness } from "@/lib/items/scales";
+import { SCALES, STEM, toGoodness } from "@/lib/items/scales";
 
 export const dynamic = "force-dynamic";
 
@@ -47,11 +47,7 @@ export async function GET() {
         csvCell(rater?.roleLabel ?? ""),
         csvCell(DOMAIN_MAP[item.domain].name),
         csvCell(item.id),
-        csvCell(
-          SCALE_STEMS[item.scale]
-            ? `${SCALE_STEMS[item.scale]} ${item.text}`
-            : item.text
-        ),
+        csvCell(`${STEM} ${item.text}`),
         csvCell(r.isNa ? null : r.value),
         csvCell(r.isNa ? "N/A" : SCALES[item.scale].labels[r.value ?? -1] ?? ""),
         csvCell(r.isNa ? "yes" : "no"),
@@ -65,12 +61,13 @@ export async function GET() {
   }
 
   // Snapshots as separate rows
-  const snapHeader = ["timestamp", "rater", "metric", "value_-2_to_2", "note"];
+  const snapHeader = ["timestamp", "rater", "metric", "value_-2_to_2", "detail", "note"];
   lines.push("", snapHeader.join(","));
   for (const c of allCheckins) {
     const rater = raterMap.get(c.raterId);
+    const moodDetail = [c.moodFlags, c.moodOther].filter(Boolean).join(" — ");
     const metrics: [string, number | null][] = [
-      ["receptivity", c.snapAlertness],
+      ["responsiveness", c.snapAlertness],
       ["expression", c.snapCommunication],
       ["mood", c.snapMood],
       ["regulation", c.snapRegulation],
@@ -83,6 +80,7 @@ export async function GET() {
           csvCell(rater?.name ?? c.raterId),
           csvCell(metric),
           csvCell(v - 2),
+          csvCell(metric === "mood" ? moodDetail || null : null),
           csvCell(c.note),
         ].join(",")
       );

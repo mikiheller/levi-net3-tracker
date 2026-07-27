@@ -84,7 +84,7 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
 
   const snapshotData = data.snapshots.map((s) => ({
     date: s.date,
-    Receptivity: s.alertness,
+    Responsiveness: s.alertness,
     Expression: s.communication,
     Mood: s.mood,
     Regulation: s.regulation,
@@ -142,7 +142,7 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
                 events={data.events}
                 axisValues={snapshotData.map((p) => p.date)}
               />
-              <Line type="monotone" dataKey="Receptivity" stroke="#0ea5e9" strokeWidth={2} dot={false} connectNulls />
+              <Line type="monotone" dataKey="Responsiveness" stroke="#0ea5e9" strokeWidth={2} dot={false} connectNulls />
               <Line type="monotone" dataKey="Expression" stroke="#6366f1" strokeWidth={2} dot={false} connectNulls />
               <Line type="monotone" dataKey="Mood" stroke="#ec4899" strokeWidth={2} dot={false} connectNulls />
               <Line type="monotone" dataKey="Regulation" stroke="#10b981" strokeWidth={2} dot={false} connectNulls />
@@ -151,7 +151,7 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
         </div>
         <div className="mt-2 flex flex-wrap gap-4 text-xs text-stone-500">
           {[
-            ["Receptivity", "#0ea5e9"],
+            ["Responsiveness", "#0ea5e9"],
             ["Expression", "#6366f1"],
             ["Mood", "#ec4899"],
             ["Regulation", "#10b981"],
@@ -291,7 +291,7 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
                 <th className="pb-2 pr-3 font-medium">Person</th>
                 <th className="pb-2 pr-3 font-medium">Check-ins</th>
                 <th className="pb-2 pr-3 font-medium">Overall</th>
-                {DOMAINS.filter((d) => d.id !== "qol").map((d) => (
+                {DOMAINS.map((d) => (
                   <th key={d.id} className="pb-2 pr-3 font-medium">
                     {d.shortName}
                   </th>
@@ -317,7 +317,7 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
                       </td>
                       <td className="py-2 pr-3 text-stone-500">{rp.checkinCount}</td>
                       <td className="py-2 pr-3 font-semibold">{rp.overall ?? "—"}</td>
-                      {DOMAINS.filter((d) => d.id !== "qol").map((d) => {
+                      {DOMAINS.map((d) => {
                         const v = rp.byDomain[d.id];
                         return (
                           <td key={d.id} className="py-2 pr-3">
