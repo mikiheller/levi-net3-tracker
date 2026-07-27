@@ -21,7 +21,7 @@ export default async function Home() {
           minute.
         </p>
 
-        <div className="mt-8 grid grid-cols-2 gap-2.5">
+        <div className="mx-auto mt-8 flex w-full max-w-sm flex-col gap-2.5">
           {allRaters.map((r) => (
             <Link
               key={r.id}
@@ -39,7 +39,7 @@ export default async function Home() {
           ))}
           <Link
             href="/join"
-            className="group col-span-2 flex items-center gap-3 rounded-xl border-2 border-dashed border-stone-300 px-4 py-3 transition hover:border-indigo-400 hover:bg-indigo-50/40"
+            className="group flex items-center gap-3 rounded-xl border-2 border-dashed border-stone-300 px-4 py-3 transition hover:border-indigo-400 hover:bg-indigo-50/40"
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-200 text-base font-bold text-stone-500 transition group-hover:bg-indigo-100 group-hover:text-indigo-600">
               +
