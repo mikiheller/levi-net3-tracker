@@ -39,8 +39,9 @@ const MOOD_FLAG_OPTIONS = [
   "Sad",
   "Angry",
   "Agitated",
-  "Maybe just uncomfortable",
-  "Sick or tired",
+  "Uncomfortable",
+  "Sick",
+  "Tired",
   "Other",
 ];
 
