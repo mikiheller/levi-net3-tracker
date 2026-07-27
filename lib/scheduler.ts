@@ -1,6 +1,6 @@
 import { gte } from "drizzle-orm";
 import { getDb, responses, raters as ratersTable, type Rater } from "./db";
-import { ITEMS } from "./items/items";
+import { ITEMS, ITEM_MAP } from "./items/items";
 import { DOMAINS, DOMAIN_MAP } from "./items/domains";
 import { toGoodness } from "./items/scales";
 import type { Item } from "./items/types";
@@ -42,6 +42,41 @@ export async function buildBatch(raterId: string): Promise<Item[]> {
   const meanWeight =
     DOMAINS.reduce((s, d) => s + (weights[d.id] ?? d.defaultWeight), 0) /
     DOMAINS.length;
+
+  // Adaptive sampling: compare each domain's last 3 weeks to the 3 weeks
+  // before. Moving domains get asked about more often — regressions much more
+  // than improvements (a decline is the most important thing to catch) — and
+  // flat domains decay to a floor so a change is still caught within ~2 weeks.
+  const movement = new Map<string, number>(); // domainId -> priority multiplier
+  {
+    const recentStart = now - 21 * DAY;
+    const priorStart = now - 42 * DAY;
+    const byDomain = new Map<string, { recent: number[]; prior: number[] }>();
+    for (const r of recent) {
+      if (r.isNa || r.value === null) continue;
+      const item = ITEM_MAP[r.itemId];
+      if (!item) continue;
+      const t = new Date(r.createdAt).getTime();
+      if (t < priorStart) continue;
+      const g = toGoodness(item.scale, item.higherIsBetter, r.value);
+      const bucket = byDomain.get(item.domain) ?? { recent: [], prior: [] };
+      (t >= recentStart ? bucket.recent : bucket.prior).push(g);
+      byDomain.set(item.domain, bucket);
+    }
+    const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+    for (const [domainId, b] of byDomain) {
+      // Too little data in either window: no adjustment.
+      if (b.recent.length < 5 || b.prior.length < 5) continue;
+      const delta = avg(b.recent) - avg(b.prior); // goodness points, -100..100
+      if (Math.abs(delta) < 3) {
+        movement.set(domainId, 0.6); // flat: back off (floor, never zero)
+      } else {
+        const mag = Math.min(Math.abs(delta), 15) / 15; // saturate at 15 pts
+        // Improvement boosts up to 2x; regression up to 3.5x (2.5x the extra).
+        movement.set(domainId, 1 + mag * (delta < 0 ? 2.5 : 1.0));
+      }
+    }
+  }
 
   // Latest response per (item, rater) and per item overall.
   const lastByItemRater = new Map<string, number>();
@@ -110,7 +145,7 @@ export async function buildBatch(raterId: string): Promise<Item[]> {
     const baselineBonus = everAnswered ? 0 : 0.3;
 
     const weight = weights[item.domain] ?? DOMAIN_MAP[item.domain].defaultWeight;
-    const domainFactor = weight / meanWeight;
+    const domainFactor = (weight / meanWeight) * (movement.get(item.domain) ?? 1);
 
     const score =
       Math.min(urgency, 3) * (0.5 + domainFactor) +

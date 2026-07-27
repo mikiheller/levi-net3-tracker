@@ -9,7 +9,8 @@ import {
   raters,
   events,
 } from "@/lib/db";
-import { saveWeights, type Weights } from "@/lib/settings";
+import { getWeights, saveWeights, type Weights } from "@/lib/settings";
+import { DOMAIN_MAP } from "@/lib/items/domains";
 
 export interface CheckinPayload {
   raterId: string;
@@ -127,7 +128,27 @@ export async function deleteEvent(id: string) {
 }
 
 export async function saveWeightsAction(weights: Weights) {
+  // Log weight changes like an intervention, so score shifts caused by
+  // re-weighting are visible on the charts and never mistaken for progress.
+  const old = await getWeights();
+  const changed = Object.entries(weights).filter(
+    ([id, w]) => (old[id] ?? 0) !== w
+  );
   await saveWeights(weights);
+  if (changed.length > 0) {
+    const db = await getDb();
+    await db.insert(events).values({
+      name: "Domain weights changed",
+      category: "other",
+      startDate: new Date().toISOString().slice(0, 10),
+      notes: changed
+        .map(
+          ([id, w]) =>
+            `${DOMAIN_MAP[id]?.shortName ?? id}: ${old[id] ?? 0} → ${w}`
+        )
+        .join(", "),
+    });
+  }
   revalidatePath("/dashboard");
   revalidatePath("/admin");
 }
