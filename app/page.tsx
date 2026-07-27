@@ -45,7 +45,7 @@ export default async function Home() {
               +
             </div>
             <div className="text-base font-semibold text-stone-600 group-hover:text-indigo-700">
-              I&apos;m new — add me
+              Add me
             </div>
           </Link>
         </div>
