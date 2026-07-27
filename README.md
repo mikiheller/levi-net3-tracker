@@ -2,20 +2,26 @@
 
 A web app for tracking Levi's development across communication, cognition,
 daily living skills, and more — built on the NET3 scales (Frazier et al.) plus
-a custom Communication & Language ladder, designed for a whole care team to
-contribute one-minute check-ins.
+custom ladders for verbal speech, AAC, gestures, and receptive understanding,
+designed for a whole care team to contribute one-minute check-ins.
 
 ## How it works
 
 - **Home page** — everyone on the team taps their name after a session with
   Levi. No accounts, no passwords.
-- **Check-in (~1 minute)** — a 4-question "today vs. typical" snapshot plus
-  ~5 NET3 questions chosen by a scheduler that:
+- **Check-in (~1 minute)** — a 4-question "today vs. typical" snapshot (a
+  worse-than-typical mood expands into a quick "what seemed off" multi-select),
+  then ~5 questions under one shared prompt ("This past week, how often did
+  he…"), all on one Never→Very often scale. Questions can be skipped. Notes
+  can be typed or dictated (Whisper). The scheduler:
   - rotates through every domain on a weekly-ish cadence per person,
   - deliberately overlaps raters on the same items within the same window
     (so scores are calibrated across people),
   - skips questions far above Levi's demonstrated skill ceiling, with
-    built-in probes so breakthroughs still get caught.
+    built-in probes so breakthroughs still get caught,
+  - adaptively samples: domains that are moving get asked about more
+    (regressions boosted much harder than improvements), flat domains decay
+    to a floor.
 - **Dashboard** (`/dashboard`) — weighted composite trend, per-domain charts
   with per-rater overlays, a daily pulse chart, intervention markers, a
   rater-comparison table, and the team's notes.
