@@ -40,14 +40,6 @@ export default async function Home() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-stone-400 underline-offset-4 hover:text-stone-600 hover:underline"
-          >
-            View progress dashboard →
-          </Link>
-        </div>
       </div>
     </main>
   );

@@ -37,12 +37,6 @@ export default async function ThanksPage({
           >
             Feeling generous? Answer a few more
           </Link>
-          <Link
-            href="/dashboard"
-            className="text-sm text-stone-400 hover:text-stone-600"
-          >
-            See dashboard
-          </Link>
         </div>
       </div>
     </main>
