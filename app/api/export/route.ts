@@ -1,7 +1,7 @@
 import { getDb, responses, checkins, raters } from "@/lib/db";
 import { ITEM_MAP } from "@/lib/items/items";
 import { DOMAIN_MAP } from "@/lib/items/domains";
-import { SCALES, toGoodness } from "@/lib/items/scales";
+import { SCALES, SCALE_STEMS, toGoodness } from "@/lib/items/scales";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +47,11 @@ export async function GET() {
         csvCell(rater?.roleLabel ?? ""),
         csvCell(DOMAIN_MAP[item.domain].name),
         csvCell(item.id),
-        csvCell(item.text),
+        csvCell(
+          SCALE_STEMS[item.scale]
+            ? `${SCALE_STEMS[item.scale]} ${item.text}`
+            : item.text
+        ),
         csvCell(r.isNa ? null : r.value),
         csvCell(r.isNa ? "N/A" : SCALES[item.scale].labels[r.value ?? -1] ?? ""),
         csvCell(r.isNa ? "yes" : "no"),

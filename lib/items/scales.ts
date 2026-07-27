@@ -1,5 +1,15 @@
 import type { Scale, ScaleId } from "./types";
 
+// Shared question stems, shown above each item. Item texts are fragments that
+// continue the stem (QoL statements and the sleep-hours item have no stem).
+export const SCALE_STEMS: Partial<Record<ScaleId, string>> = {
+  freq5: "This past week, how often did he\u2026",
+  independence4: "How independently does he\u2026",
+  difficulty4: "How easy or hard is it for him to\u2026",
+  sleepFreq5: "This past week, how many nights did he\u2026",
+  problem5: "This past week, how much of a problem was\u2026",
+};
+
 export const SCALES: Record<ScaleId, Scale> = {
   freq5: {
     id: "freq5",

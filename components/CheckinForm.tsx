@@ -2,23 +2,22 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { SCALES } from "@/lib/items/scales";
+import { SCALES, SCALE_STEMS } from "@/lib/items/scales";
 import type { Item } from "@/lib/items/types";
 import { submitCheckin } from "@/app/actions";
 
 const SNAPSHOT_METRICS = [
   {
     key: "alertness" as const,
-    label: "How receptive was he? (taking things in, responding to people)",
+    label: "How tuned in was he? (noticing people, responding when you talked to him)",
     low: "Much less than usual",
     high: "Much more than usual",
   },
   {
     key: "communication" as const,
-    label:
-      "How was his expressive communication? (gestures, AAC, sounds — any way he told you things)",
-    low: "Much less than usual",
-    high: "Much more than usual",
+    label: "How well did he communicate? (gestures, AAC, sounds — anything)",
+    low: "Much worse than usual",
+    high: "Much better than usual",
   },
   {
     key: "mood" as const,
@@ -28,9 +27,9 @@ const SNAPSHOT_METRICS = [
   },
   {
     key: "regulation" as const,
-    label: "How regulated was he? (behavior, transitions, stimming)",
-    low: "Much harder than usual",
-    high: "Much easier than usual",
+    label: "How was his behavior? (meltdowns, transitions, stimming)",
+    low: "Much worse than usual",
+    high: "Much better than usual",
   },
 ];
 
@@ -215,8 +214,12 @@ export default function CheckinForm({
           {items.map((item) => {
             const scale = SCALES[item.scale];
             const a = answers[item.id];
+            const stem = SCALE_STEMS[item.scale];
             return (
               <div key={item.id}>
+                {stem && (
+                  <div className="text-xs text-stone-400">{stem}</div>
+                )}
                 <div className="text-[15px] font-medium leading-snug">
                   {item.text}
                 </div>
