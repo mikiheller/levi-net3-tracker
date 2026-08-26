@@ -61,6 +61,7 @@ export async function GET() {
   }
 
   // Snapshots as separate rows
+  const AGGRESSION_LABELS = ["none at all", "a little bit", "a lot"];
   const snapHeader = ["timestamp", "rater", "metric", "value_-2_to_2", "detail", "note"];
   lines.push("", snapHeader.join(","));
   for (const c of allCheckins) {
@@ -81,6 +82,19 @@ export async function GET() {
           csvCell(metric),
           csvCell(v - 2),
           csvCell(metric === "mood" ? moodDetail || null : null),
+          csvCell(c.note),
+        ].join(",")
+      );
+    }
+    // Aggression uses its own 0-2 scale, exported with the raw value and label
+    if (c.snapAggression !== null) {
+      lines.push(
+        [
+          csvCell(new Date(c.createdAt).toISOString()),
+          csvCell(rater?.name ?? c.raterId),
+          csvCell("aggression"),
+          csvCell(c.snapAggression),
+          csvCell(AGGRESSION_LABELS[c.snapAggression] ?? null),
           csvCell(c.note),
         ].join(",")
       );

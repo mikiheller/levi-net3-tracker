@@ -31,6 +31,8 @@ export const checkins = pgTable("checkins", {
   snapCommunication: integer("snap_communication"),
   snapMood: integer("snap_mood"),
   snapRegulation: integer("snap_regulation"),
+  // Aggression toward the rater this session: 0 = none at all, 1 = a little bit, 2 = a lot
+  snapAggression: integer("snap_aggression"),
   // When mood is worse than typical: what it looked like (comma-separated)
   moodFlags: text("mood_flags"),
   moodOther: text("mood_other"),

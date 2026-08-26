@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS checkins (
   snap_communication integer,
   snap_mood integer,
   snap_regulation integer,
+  snap_aggression integer,
   mood_flags text,
   mood_other text
 );
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS settings (
   key text PRIMARY KEY,
   value jsonb NOT NULL
 );
+ALTER TABLE checkins ADD COLUMN IF NOT EXISTS snap_aggression integer;
 CREATE INDEX IF NOT EXISTS responses_item_idx ON responses (item_id, created_at);
 CREATE INDEX IF NOT EXISTS responses_rater_idx ON responses (rater_id, created_at);
 `;

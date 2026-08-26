@@ -21,6 +21,7 @@ export interface CheckinPayload {
     communication: number | null;
     mood: number | null;
     regulation: number | null;
+    aggression: number | null;
   };
   moodFlags: string[];
   moodOther: string;
@@ -38,6 +39,7 @@ export async function submitCheckin(payload: CheckinPayload) {
       snapCommunication: payload.snapshot.communication,
       snapMood: payload.snapshot.mood,
       snapRegulation: payload.snapshot.regulation,
+      snapAggression: payload.snapshot.aggression,
       moodFlags: payload.moodFlags.length ? payload.moodFlags.join(", ") : null,
       moodOther: payload.moodOther.trim() || null,
     })

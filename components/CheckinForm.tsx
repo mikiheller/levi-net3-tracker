@@ -35,6 +35,10 @@ const SNAPSHOT_METRICS = [
 
 const SNAP_LABELS = ["−−", "−", "Typical", "+", "++"];
 
+// Fifth recurring question, right after the four "today vs. typical" metrics.
+const AGGRESSION_QUESTION = "What was his aggression level with you?";
+const AGGRESSION_OPTIONS = ["none at all", "a little bit", "a lot"];
+
 const MOOD_FLAG_OPTIONS = [
   "Sad",
   "Angry",
@@ -61,6 +65,7 @@ export default function CheckinForm({
 }) {
   const router = useRouter();
   const [snapshot, setSnapshot] = useState<Record<string, number | undefined>>({});
+  const [aggression, setAggression] = useState<number | undefined>(undefined);
   const [moodFlags, setMoodFlags] = useState<string[]>([]);
   const [moodOther, setMoodOther] = useState("");
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
@@ -128,10 +133,11 @@ export default function CheckinForm({
   const answeredCount =
     Object.keys(answers).length +
     (showSnapshot
-      ? SNAPSHOT_METRICS.filter((m) => snapshot[m.key] !== undefined).length
+      ? SNAPSHOT_METRICS.filter((m) => snapshot[m.key] !== undefined).length +
+        (aggression !== undefined ? 1 : 0)
       : 0);
   const totalCount =
-    items.length + (showSnapshot ? SNAPSHOT_METRICS.length : 0);
+    items.length + (showSnapshot ? SNAPSHOT_METRICS.length + 1 : 0);
   // Unanswered questions are fine — people can't always judge everything.
   const canSubmit = answeredCount > 0;
   const moodIsWorse = snapshot.mood !== undefined && snapshot.mood < 2;
@@ -153,6 +159,7 @@ export default function CheckinForm({
         communication: snapshot.communication ?? null,
         mood: snapshot.mood ?? null,
         regulation: snapshot.regulation ?? null,
+        aggression: aggression ?? null,
       },
       moodFlags: moodIsWorse ? moodFlags : [],
       moodOther: moodIsWorse && moodFlags.includes("Other") ? moodOther : "",
@@ -236,6 +243,25 @@ export default function CheckinForm({
               )}
             </div>
           ))}
+          <div>
+            <div className="mb-1.5 text-sm font-medium">{AGGRESSION_QUESTION}</div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {AGGRESSION_OPTIONS.map((label, v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setAggression(v)}
+                  className={`rounded-lg border px-1 py-2.5 text-xs font-medium transition ${
+                    aggression === v
+                      ? "border-indigo-600 bg-indigo-600 text-white"
+                      : "border-stone-200 bg-stone-50 text-stone-600 hover:border-stone-300"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
       )}
