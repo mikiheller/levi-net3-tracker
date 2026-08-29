@@ -1,7 +1,8 @@
 import { drizzle as drizzlePg } from "drizzle-orm/postgres-js";
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import * as schema from "./schema";
+import { WOODSIDE_MODE, WOODSIDE_RATER_ID, WOODSIDE_RATER_NAME } from "../woodside";
 
 // Production: Postgres via DATABASE_URL (Neon on Vercel).
 // Local dev: embedded PGlite stored in .data/ — zero setup.
@@ -82,6 +83,26 @@ async function init(db: Db) {
   if (existing.length === 0) {
     await db.insert(schema.raters).values(SEED_RATERS);
   }
+  // School-facing deployments share this database. Make sure the single
+  // shared "Woodside Staff" rater exists. It stays inactive so it never
+  // appears on the main app's home screen; the school app lists it directly.
+  if (WOODSIDE_MODE) {
+    const ws = await db
+      .select()
+      .from(schema.raters)
+      .where(eq(schema.raters.id, WOODSIDE_RATER_ID));
+    if (ws.length === 0) {
+      await db.insert(schema.raters).values({
+        id: WOODSIDE_RATER_ID,
+        name: WOODSIDE_RATER_NAME,
+        role: "professional",
+        roleLabel: "School staff",
+        color: "#0e7490",
+        active: false,
+        sort: 999,
+      });
+    }
+  }
   const eventRows = await db.select().from(schema.events);
   if (eventRows.length === 0) {
     await db.insert(schema.events).values({
@@ -124,3 +145,4 @@ export async function getDb(): Promise<Db> {
 }
 
 export * from "./schema";
+
