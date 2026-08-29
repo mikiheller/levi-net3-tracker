@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { joinTeam } from "@/app/actions";
+import { notFound } from "next/navigation";
+import { WOODSIDE_MODE } from "@/lib/woodside";
 
 export const dynamic = "force-dynamic";
 
 export default function JoinPage() {
+  // School-facing mode has a single shared rater; self-serve join is off.
+  if (WOODSIDE_MODE) notFound();
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
@@ -71,3 +75,4 @@ export default function JoinPage() {
     </main>
   );
 }
+
