@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { getDb, raters } from "@/lib/db";
 import { buildBatch } from "@/lib/scheduler";
 import CheckinForm from "@/components/CheckinForm";
+import { WOODSIDE_MODE, WOODSIDE_RATER_ID } from "@/lib/woodside";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,8 @@ export default async function CheckinPage({
   searchParams: Promise<{ more?: string }>;
 }) {
   const { raterId } = await params;
+  // School-facing mode serves only the shared Woodside Staff check-in.
+  if (WOODSIDE_MODE && raterId !== WOODSIDE_RATER_ID) notFound();
   const mode = (await searchParams).more ? ("more" as const) : ("full" as const);
   const db = await getDb();
   const [rater] = await db.select().from(raters).where(eq(raters.id, raterId));
@@ -55,3 +58,4 @@ export default async function CheckinPage({
     </main>
   );
 }
+
