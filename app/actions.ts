@@ -12,6 +12,7 @@ import {
 } from "@/lib/db";
 import { getWeights, saveWeights, type Weights } from "@/lib/settings";
 import { DOMAIN_MAP } from "@/lib/items/domains";
+import { WOODSIDE_MODE, WOODSIDE_RATER_ID } from "@/lib/woodside";
 
 export interface CheckinPayload {
   raterId: string;
@@ -30,10 +31,12 @@ export interface CheckinPayload {
 
 export async function submitCheckin(payload: CheckinPayload) {
   const db = await getDb();
+  // School-facing mode always logs as the shared Woodside Staff rater.
+  const raterId = WOODSIDE_MODE ? WOODSIDE_RATER_ID : payload.raterId;
   const [checkin] = await db
     .insert(checkins)
     .values({
-      raterId: payload.raterId,
+      raterId,
       note: payload.note.trim() || null,
       snapAlertness: payload.snapshot.alertness,
       snapCommunication: payload.snapshot.communication,
@@ -49,7 +52,7 @@ export async function submitCheckin(payload: CheckinPayload) {
     await db.insert(responses).values(
       payload.answers.map((a) => ({
         checkinId: checkin.id,
-        raterId: payload.raterId,
+        raterId,
         itemId: a.itemId,
         value: a.isNa ? null : a.value,
         isNa: a.isNa,
@@ -75,6 +78,7 @@ const JOIN_COLORS = [
 ];
 
 export async function joinTeam(formData: FormData) {
+  if (WOODSIDE_MODE) redirect("/");
   const name = String(formData.get("name") ?? "").trim();
   const roleKey = String(formData.get("role") ?? "");
   const roleInfo = JOIN_ROLES[roleKey];
@@ -214,3 +218,4 @@ export async function deleteCheckin(id: string) {
   revalidatePath("/dashboard");
   revalidatePath("/admin");
 }
+
