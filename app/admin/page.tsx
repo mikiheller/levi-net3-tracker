@@ -2,10 +2,14 @@ import { desc } from "drizzle-orm";
 import { getDb, raters, events, checkins } from "@/lib/db";
 import { getWeights } from "@/lib/settings";
 import AdminClient from "@/components/AdminClient";
+import { notFound } from "next/navigation";
+import { WOODSIDE_MODE } from "@/lib/woodside";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
+  // Admin manages the whole team, so it stays off the school-facing copy.
+  if (WOODSIDE_MODE) notFound();
   const db = await getDb();
   const [allRaters, allEvents, recentCheckins, weights] = await Promise.all([
     db.select().from(raters),
@@ -38,3 +42,4 @@ export default async function AdminPage() {
     </main>
   );
 }
+
