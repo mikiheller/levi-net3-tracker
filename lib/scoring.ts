@@ -3,6 +3,7 @@ import { ITEM_MAP } from "./items/items";
 import { DOMAINS } from "./items/domains";
 import { toGoodness } from "./items/scales";
 import { getWeights } from "./settings";
+import { WOODSIDE_MODE, WOODSIDE_RATER_ID } from "./woodside";
 
 const DAY = 86_400_000;
 
@@ -59,7 +60,7 @@ const mean = (xs: number[]) =>
 
 export async function getDashboardData(): Promise<DashboardData> {
   const db = await getDb();
-  const [allResponses, allCheckins, allRaters, allEvents, weights] =
+  const [rawResponses, rawCheckins, rawRaters, rawEvents, weights] =
     await Promise.all([
       db.select().from(responses),
       db.select().from(checkins),
@@ -67,6 +68,21 @@ export async function getDashboardData(): Promise<DashboardData> {
       db.select().from(events),
       getWeights(),
     ]);
+
+  // School-facing mode: show only what Woodside staff collected. Other
+  // team members' names, scores, and notes never reach this deployment,
+  // and family-logged intervention markers (medications, therapies) are
+  // hidden too.
+  const allResponses = WOODSIDE_MODE
+    ? rawResponses.filter((r) => r.raterId === WOODSIDE_RATER_ID)
+    : rawResponses;
+  const allCheckins = WOODSIDE_MODE
+    ? rawCheckins.filter((c) => c.raterId === WOODSIDE_RATER_ID)
+    : rawCheckins;
+  const allRaters = WOODSIDE_MODE
+    ? rawRaters.filter((r) => r.id === WOODSIDE_RATER_ID)
+    : rawRaters;
+  const allEvents = WOODSIDE_MODE ? [] : rawEvents;
 
   const now = Date.now();
 
@@ -232,3 +248,4 @@ export async function getDashboardData(): Promise<DashboardData> {
     weights,
   };
 }
+
