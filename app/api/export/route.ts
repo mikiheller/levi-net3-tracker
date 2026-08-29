@@ -2,6 +2,7 @@ import { getDb, responses, checkins, raters } from "@/lib/db";
 import { ITEM_MAP } from "@/lib/items/items";
 import { DOMAIN_MAP } from "@/lib/items/domains";
 import { SCALES, STEM, toGoodness } from "@/lib/items/scales";
+import { WOODSIDE_MODE } from "@/lib/woodside";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,9 @@ function csvCell(v: string | number | null): string {
 }
 
 export async function GET() {
+  // The full-dataset export includes every rater, so it stays off the
+  // school-facing copy.
+  if (WOODSIDE_MODE) return new Response("Not found", { status: 404 });
   const db = await getDb();
   const [allResponses, allCheckins, allRaters] = await Promise.all([
     db.select().from(responses),
@@ -108,3 +112,4 @@ export async function GET() {
     },
   });
 }
+
