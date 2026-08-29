@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { APP_TITLE, WOODSIDE_MODE } from "@/lib/woodside";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,9 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Levi Tracker",
-  description:
-    "Tracking Levi's progress across communication, cognition, and daily skills — NET3-based check-ins from everyone on his team.",
+  title: APP_TITLE,
+  description: WOODSIDE_MODE
+    ? "Woodside school staff check-ins for Levi's progress — writing into the same shared school/home database."
+    : "Tracking Levi's progress across communication, cognition, and daily skills — NET3-based check-ins from everyone on his team.",
 };
 
 export default function RootLayout({
